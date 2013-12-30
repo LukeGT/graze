@@ -1,0 +1,24 @@
+{
+  "name": "graze",
+  "version": "0.0.0",
+  "description": "A scraping library for node.js",
+  "main": "index.coffee",
+  "scripts": {
+    "test": "test.coffee"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/LukeGT/graze"
+  },
+  "keywords": [
+    "scrape",
+    "scraping",
+    "html",
+    "web"
+  ],
+  "author": "Luke Tsekouras",
+  "license": "BSD",
+  "bugs": {
+    "url": "https://github.com/LukeGT/graze/issues"
+  }
+}
