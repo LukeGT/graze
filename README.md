@@ -10,63 +10,64 @@ Construct templates using a combination of CSS queries and graze extractors to t
 
 Coffeescript:
 
-    graze = require 'graze'
+```coffee
+graze = require 'graze'
 
-    template = graze.template
-        '#searchResult tr': 
-            results: [
-                'td:eq(1)':
-                    '.detName a':
-                        title: graze.text()
-                        '&':
-                            link: graze.attr('href')
-                    '[alt="Magnet link"]':
-                        magnet_link: graze.parent().attr('href')
-                    '.detDesc':
-                        description: graze.text()
-                        size: graze.text().regex(/Size\s*([^,]*),/)
-                'td:eq(2)':
-                    seeders: graze.text()
-            ]
+template = graze.template
+    '#searchResult tr': 
+        results: [
+            'td:eq(1)':
+                '.detName a':
+                    title: graze.text()
+                    link: graze.attr('href')
+                '[alt="Magnet link"]':
+                    magnet_link: graze.parent().attr('href')
+                '.detDesc':
+                    description: graze.text()
+                    size: ($el) -> $el.text().match(/Size\s*([^,]*),/)?[1]
+            'td:eq(2)':
+                seeders: graze.text()
+        ]
 
-    template.scrape('http://thepiratebay.se/search/something%20illegal/').then (results) ->
-        console.log results
-
+template.scrape('http://thepiratebay.se/search/something%20illegal/').then (results) ->
+    console.log results
+```
 
 Javscript:
 
-    var graze = require('graze');
+```javascript
+var graze = require('graze');
 
-    var template = graze.template({
-        '#searchResult tr': {
-            results: [
-                'td:eq(1)': {
-                    '.detName a': {
-                        title: graze.text(),
-                        '&': {
-                            link: graze.attr('href'),
-                        },
-                    },
-                    '[alt="Magnet link"]': {
-                        magnet_link: graze.parent().attr('href'),
-                    },
-                    '.detDesc': {
-                        description: graze.text(),
-                        size: graze.text().regex(/Size\s*([^,]*),/),
-                    },
+var template = graze.template({
+    '#searchResult tr': {
+        results: [
+            'td:eq(1)': {
+                '.detName a': {
+                    title: graze.text(),
+                    link: graze.attr('href'),
                 },
-                'td:eq(2)': {
-                    seeders: graze.text(),
+                '[alt="Magnet link"]': {
+                    magnet_link: graze.parent().attr('href'),
                 },
-            ],
-        },
-    });
+                '.detDesc': {
+                    description: graze.text(),
+                    size: function($el) { match = $el.text().match(/Size\s*([^,]*),/); return match && match[1] }
+                },
+            },
+            'td:eq(2)': {
+                seeders: graze.text(),
+            },
+        ],
+    },
+});
 
     template.scrape('http://thepiratebay.se/search/something%20illegal/').then (results) ->
         console.log(results)
+```
 
 Results:
 
+```javascript
     {
         "results": [ {
             "title": "Chairlift - Something",
@@ -82,3 +83,4 @@ Results:
             ...
         } ]
     }
+```

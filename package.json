@@ -22,7 +22,9 @@
     "url": "https://github.com/LukeGT/graze/issues"
   },
   "dependencies": {
+    "request": "~2.30.0",
+    "q": "~0.9.7",
     "jquery": "~2.1.0-beta3",
-    "request": "~2.30.0"
+    "jsdom": "~0.8.10"
   }
 }
