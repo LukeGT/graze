@@ -29,7 +29,9 @@ Coffeescript:
                     seeders: graze.text()
             ]
 
-    results = template.scrape('http://thepiratebay.se/search/something%20illegal/')
+    template.scrape('http://thepiratebay.se/search/something%20illegal/').then (results) ->
+        console.log results
+
 
 Javscript:
 
@@ -60,7 +62,8 @@ Javscript:
         },
     });
 
-    results = template.scrape('http://thepiratebay.se/search/something%20illegal/')
+    template.scrape('http://thepiratebay.se/search/something%20illegal/').then (results) ->
+        console.log(results)
 
 Results:
 
