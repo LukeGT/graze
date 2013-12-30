@@ -20,5 +20,9 @@
   "license": "BSD",
   "bugs": {
     "url": "https://github.com/LukeGT/graze/issues"
+  },
+  "dependencies": {
+    "jquery": "~2.1.0-beta3",
+    "request": "~2.30.0"
   }
 }
