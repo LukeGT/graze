@@ -38,22 +38,16 @@ for name, func of $.fn
 
 traverse = (template, $el) ->
 
-    console.log template
-
     result = {}
 
     for key, val of template
-
-        console.log key, val instanceof Array
 
         if val instanceof Graze
             result[key] = val.execute $el
 
         else if val instanceof Array
             result[key] = []
-            console.log 'cock!', $el
             $el.each (index) ->
-                console.log 'each!'
                 result[key].push traverse val[0], $ @
 
         else if val instanceof Function
@@ -88,7 +82,6 @@ Gecko) Chrome/31.0.1650.63 Safari/537.36'
             unless response.statusCode == 200
                 return deferred.reject new Error response
 
-            console.log arguments
             deferred.resolve traverse @template, $ body
 
         return deferred.promise
