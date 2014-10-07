@@ -44,7 +44,7 @@ var graze = require('graze');
 
 var template = graze.template({
     '#searchResult tr': {
-        results: [
+        results: [{
             'td:eq(1)': {
                 '.detName a': {
                     title: graze.text(),
@@ -61,7 +61,7 @@ var template = graze.template({
             'td:eq(2)': {
                 seeders: graze.text(),
             },
-        ],
+        }],
     },
 });
 
