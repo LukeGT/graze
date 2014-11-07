@@ -27,6 +27,7 @@ for name, func of $.fn
             @chain.push
                 func: func
                 args: arguments
+            return this
 
         module.exports[name] = ->
             graze = new Graze()
@@ -48,7 +49,7 @@ traverse = (template, $el) ->
         else if val instanceof Array
             result[key] = []
             $el.each (index) ->
-                result[key].push traverse val[0], $ @
+                result[key].push traverse val[0], $ this
 
         else if val instanceof Function
             result[key] = val $el
