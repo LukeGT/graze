@@ -66,13 +66,13 @@ class Template
 
     constructor: (@template) ->
 
-    scrape: (url) ->
+    scrape: (options) ->
         
+        if typeof options == 'string'
+          options = uri: options
+
         deferred = Q.defer()
-        options =
-            url: url
-            headers:
-                'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like
+        options.header ?= 'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like
 Gecko) Chrome/31.0.1650.63 Safari/537.36'
 
         request options, (error, response, body) =>
