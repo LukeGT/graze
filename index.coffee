@@ -77,11 +77,8 @@ Gecko) Chrome/31.0.1650.63 Safari/537.36'
 
         request options, (error, response, body) =>
 
-            if error
-                return deferred.reject new Error error
-
-            unless response.statusCode == 200
-                return deferred.reject new Error response
+            if error or response.statusCode != 200
+                return deferred.reject {error, response, body}
 
             deferred.resolve traverse @template, $ body
 
