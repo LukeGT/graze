@@ -87,3 +87,6 @@ Gecko) Chrome/31.0.1650.63 Safari/537.36'
 
 module.exports.template = (template) ->
     return new Template template
+
+module.exports.traverse = (template, body) ->
+    return traverse template, $ body
