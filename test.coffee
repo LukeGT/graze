@@ -18,10 +18,6 @@ pirate_bay_template = graze.template
                 seeders: graze.text()
         ]
 
-# pirate_bay_template.scrape('http://thepiratebay.se/search/something').then (data) ->
-#     console.log data
-# .done()
-
 vows.describe('Functional Tests').addBatch
 
     'when looking at pirate bay':
@@ -32,49 +28,53 @@ vows.describe('Functional Tests').addBatch
 
             topic: (template) ->
                 template.scrape('http://thepiratebay.se/search/something')
-                .then (data) => @callback null, data
+                .then @callback
                 .done()
                 return undefined
 
             'we get sensible data': (data) ->
-                console.log 'great success'
-                # should(data).be.ok
+                should(data).be.ok
+                data.results.should.be.ok
+                data.results[0].title.should.be.ok
+                data.results[0].link.should.be.ok
+                data.results[0].magnet_link.should.be.ok
+                data.results[0].description.should.be.ok
+                data.results[0].size.should.be.ok
+                data.results[0].seeders.should.be.ok
 
         'and trying to hit a malformed URL':
 
             topic: (template) ->
                 template.scrape('bad url')
-                .catch (data) => @callback null, data
+                .catch @callback
                 .done()
                 return undefined
 
             'it should fail': ({error, response}) ->
-                console.log "Error! Yay!"
-                # should(error).be.true
+                should(error).be.ok
 
         "and trying to hit a URL that doesn't exist":
 
             topic: (template) ->
                 template.scrape('http://www.thisurldoesntexistoritbetterwellnotorelsethistestwillfail.com/')
-                .catch (data) => @callback null, data
+                .catch @callback
                 .done()
                 return undefined
 
             'it should fail': ({error, response}) ->
-                console.log "ERROR!!!"
-                # should(error).be.true
+                # should(error).be.ok
 
         "and trying to hit a path that doesn't exist":
 
             topic: (template) ->
                 template.scrape('https://github.com/this/doesnt-exist')
-                .catch (data) => @callback null, data
+                .catch @callback
                 .done()
                 return undefined
 
             'it should fail': ({error, response}) ->
-                console.log "ERROR!!!"
-                # should(error).be.false
-                # should(response.statusCode).equal(404)
+                should(error).be.null
+                should(response.statusCode).equal(404)
 
-.export(module)
+.run
+    error: false

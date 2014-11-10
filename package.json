@@ -4,7 +4,7 @@
   "description": "A scraping library for node.js",
   "main": "index.coffee",
   "scripts": {
-    "test": "test.coffee"
+    "test": "coffee test.coffee"
   },
   "repository": {
     "type": "git",
