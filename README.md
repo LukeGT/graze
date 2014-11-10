@@ -1,23 +1,17 @@
 # graze
 
-A scraping library for node.js
+A simple template-based web scraping library for node.js
 
-Construct templates using a combination of CSS selectors and Graze extractors to transform an HTML web page into a structured Javscript object.  Templates are structured in a similar way to the DOM of the page, making them easy to understand and maintain.  Graze extractors provide a plethora of methods which can be used to find exactly the data you need from the most poorly structured of pages.  It is best explained via example, so see below.  
+Web scraping is a process which can leave even the most hardy developer with an unshakable feeling of disgust.  Graze tries to make web scraping as undisgusting as possible, by letting you construct a template that just takes a URL in, and gives a well structured Javascript object out.  
 
-Graze extractors methods work just like jQuery's methods.  Pretend that `graze` is the jQuery object which matches the chain of selectors above it and construct the return value that you desire.  The corresponding key for a graze extractor value in the template is interpreted as the name by which the extractor's result will be given in the final object.  Again, this is better explained by example, so see below.  
+## Quickstart
 
-If jQuery's methods don't quite cut it, you can define your own custom function which will be passed the matched element as its only argument, and will place the return value of your function in the finalised object.  
-
-When a list of objects must be matched, provide a name for the list as the key and an array as the value.  The elements matched at this point in the heirarchy will be iterated over at this point, and passed into the template defined within.  Continue writing this template as an object placed within the first element of the array.  Other elements will be ignored.  Lists may be nested.  
-
-## Example
-
-Coffeescript:
+It's easiest to understand how it all works by looking at an example (in Coffeescript, if you don't mind).  
 
 ```coffee
 graze = require 'graze'
 
-template = graze.template
+template = graze.template {
     '#searchResult tr': 
         results: [
             'td:eq(1)':
@@ -32,12 +26,52 @@ template = graze.template
             'td:eq(2)':
                 seeders: graze.text()
         ]
+}
 
-template.scrape('http://thepiratebay.se/search/something%20illegal/').then (results) ->
-    console.log results
+# Simple usage
+template.scrape('http://thepiratebay.se/search/something%20illegal/').then (data) ->
+    console.log data
+
+# Advanced usage
+template.scrape
+  uri: 'https://securewebsite.com/user/transactions'
+  auth:
+    username: 'admin'
+    password: 'itsasecret'
+.then (data) ->
+    console.log data
+.catch ({error, response, body}) ->
+    # Handle error
+
+###
+Output on success:
+
+{
+    "results": [ {
+        "title": "Chairlift - Something",
+        "link": "http://thepiratebay.se/torrent/9360343/Chairlift_-_Something",
+        "magnet_link": "magnet:?xt=urn:btih:1e4dc0a30c6c413c947bd7df11bc8bd764c3babd",
+        "description": "Uploaded 12-17 17:53, Size 39.79 MiB, ULed by Anonymous",
+        "size": "39.79 MiB",
+        "seeders": 1,
+    }, {
+        ...
+    } ]
+}
+###
 ```
 
-Javscript:
+A template is just a Javascript object, structured hierarchically in a way similar to the HTML you're trying to scrape.  The keys and values of the objects that make up this template have special meanings.  There are two kinds of values that keys can take on:
+
+- **A CSS Selector**: This changes the scope of the template that follows.  At first the entire web page is within scope, but when a CSS selector is encountered as a key, the template contained has only the elements which match this CSS selector in its scope.  The value under a CSS selector in a template is simply another template.  
+- **A name**: This specifies a key that will be used in the output object to store information.  The value under a name in a template can be one of the following things, each which determine its output value:
+    - **An array**: This creates an iterator which will apply a template to all elements within scope.  The actual array passed in here is only of length 1, and contains the template which will be used on each element.  The final result will be an array containing the information scraped from each iterated element.  
+    - **A graze extractor**: This defines how to extract information from the HTML.  They might look familiar if you've used jQuery.  Pretend that the `graze` module is a jQuery object containing the elements in scope.  Whatever chain of methods you call here will be repeated on the web page's in-scope elements, and the final result will appear in the output object under the above name. 
+    - **A function**: A function which takes in a jQuery object, and returns the desired information.  Use a function if a graze extractor doesn't quite cut it.  
+
+Scraping a website is as simple as calling the `template.scrape` function above.  It takes the same first argument as the `request` function in the popular library [request](https://www.npmjs.org/package/request).  It returns a [q](https://www.npmjs.org/package/q) promise object, which helps to stop pyramids of death and makes error handling far more sane.  
+
+Below is an example in Javascript, for those of you not coffee-inclined.  
 
 ```javascript
 var graze = require('graze');
@@ -65,27 +99,15 @@ var template = graze.template({
     },
 });
 
-template.scrape('http://thepiratebay.se/search/something%20illegal/').then(function(results) {
-    console.log(results)
+template.scrape({
+    uri: 'https://securewebsite.com/user/transactions',
+    auth: {
+        username: 'admin',
+        password: 'itsasecret',
+    },
+}).then(function(data) {
+    console.log(data)
+}).fail(function(data) {
+    console.error data.error, data.response, data.body
 });
-```
-
-Results:
-
-```javascript
-{
-    "results": [ {
-        "title": "Chairlift - Something",
-        "link": "http://thepiratebay.se/torrent/9360343/Chairlift_-_Something",
-        "magnet_link": "magnet:?xt=urn:btih:1e4dc0a30c6c413c947bd7df11bc8bd764c3babd&dn=Pure18.13.12.07.Zoey.Paige."
-                     + "Something.Sweet.XXX.1080p.MP4-KTR&tr=udp%3A%2F%2Ftracker.openbittorrent."
-                     + "com%3A80&tr=udp%3A%2F%2Ftracker.publicbt.com%3A80&tr=udp%3A%2F%2Ftracker.istole."
-                     + "it%3A6969&tr=udp%3A%2F%2Ftracker.ccc.de%3A80&tr=udp%3A%2F%2Fopen.demonii.com%3A1337",
-        "description": "Uploaded 12-17 17:53, Size 39.79 MiB, ULed by Anonymous",
-        "size": "39.79 MiB",
-        "seeders": 1,
-    }, {
-        ...
-    } ]
-}
 ```
