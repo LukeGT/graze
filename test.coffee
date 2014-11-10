@@ -1,7 +1,9 @@
 graze = require './index'
+vows = require 'vows'
+should = require 'should'
 
-test = graze.template
-    '#searchResult tr':
+pirate_bay_template = graze.template
+    '#searchResult > tr':
         results: [
             'td:eq(1)':
                 '.detName a':
@@ -16,24 +18,63 @@ test = graze.template
                 seeders: graze.text()
         ]
 
-test.scrape('http://thepiratebay.se/search/something')
-.then (results) ->
-    console.log results
+vows.describe('Functional Tests').addBatch
 
-test.scrape('bad url')
-.then (results) ->
-    console.log 'test failed bad url'
-.catch ({error, response}) ->
-    console.log 'pass bad url:', error, response
+    'when looking at pirate bay':
 
-test.scrape('http://www.thisurldoesntexistoritbetterwellnotorelsethistestisbad.com/')
-.then (results) ->
-    console.log 'test failed non-existant'
-.catch ({error, response}) ->
-    console.log 'pass non-existant:', error, response
+        topic: pirate_bay_template
 
-test.scrape('https://github.com/this/doesnt-exist')
-.then (results) ->
-    console.log 'test failed non-200'
-.catch ({error, response}) ->
-    console.log 'pass non-200:', error, response
+        'and scraping a search for something':
+
+            topic: (template) ->
+                template.scrape('http://thepiratebay.se/search/something')
+                .then @callback
+                .done()
+                return undefined
+
+            'we get sensible data': (data) ->
+                should(data).be.ok
+                data.results.should.be.ok
+                data.results[0].title.should.be.ok
+                data.results[0].link.should.be.ok
+                data.results[0].magnet_link.should.be.ok
+                data.results[0].description.should.be.ok
+                data.results[0].size.should.be.ok
+                data.results[0].seeders.should.be.ok
+
+        'and trying to hit a malformed URL':
+
+            topic: (template) ->
+                template.scrape('bad url')
+                .catch @callback
+                .done()
+                return undefined
+
+            'it should fail': ({error, response}) ->
+                should(error).be.ok
+
+        "and trying to hit a URL that doesn't exist":
+
+            topic: (template) ->
+                template.scrape('http://www.thisurldoesntexistoritbetterwellnotorelsethistestwillfail.com/')
+                .catch @callback
+                .done()
+                return undefined
+
+            'it should fail': ({error, response}) ->
+                should(error).be.ok
+
+        "and trying to hit a path that doesn't exist":
+
+            topic: (template) ->
+                template.scrape('https://github.com/this/doesnt-exist')
+                .catch @callback
+                .done()
+                return undefined
+
+            'it should fail': ({error, response}) ->
+                should(error).be.null
+                should(response.statusCode).equal(404)
+
+.run
+    error: false

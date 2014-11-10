@@ -4,7 +4,7 @@
   "description": "A scraping library for node.js",
   "main": "index.coffee",
   "scripts": {
-    "test": "test.coffee"
+    "test": "coffee test.coffee"
   },
   "repository": {
     "type": "git",
@@ -26,5 +26,9 @@
     "q": "~0.9.7",
     "jquery": "~2.1.0-beta3",
     "jsdom": "~0.8.10"
+  },
+  "devDependencies": {
+    "should": "^4.2.1",
+    "vows": "^0.8.0"
   }
 }
