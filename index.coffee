@@ -80,13 +80,13 @@ Gecko) Chrome/31.0.1650.63 Safari/537.36'
             if error or response.statusCode != 200
                 return deferred.reject {error, response, body}
 
-            deferred.resolve traverse @template, $ body
+            deferred.resolve @process body
 
         return deferred.promise
 
+    process: (html) =>
+
+        traverse @template, $ html
 
 module.exports.template = (template) ->
     return new Template template
-
-module.exports.traverse = (template, body) ->
-    return traverse template, $ body
