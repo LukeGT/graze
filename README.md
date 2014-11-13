@@ -108,6 +108,6 @@ template.scrape({
 }).then(function(data) {
     console.log(data)
 }).fail(function(data) {
-    console.error data.error, data.response, data.body
+    console.error(data.error, data.response, data.body)
 });
 ```
