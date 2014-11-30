@@ -52,7 +52,7 @@ traverse = (template, $el) ->
                 result[key].push traverse val[0], $ this
 
         else if val instanceof Function
-            result[key] = val $el
+            result[key] = val $el, $
 
         else if typeof val == 'object'
             $.extend result, traverse val, $el.find key
