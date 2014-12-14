@@ -39,6 +39,7 @@ for name, func of $.fn
 
 traverse = (template, $el) ->
 
+    context = this
     result = {}
 
     for key, val of template
@@ -49,13 +50,13 @@ traverse = (template, $el) ->
         else if val instanceof Array
             result[key] = []
             $el.each (index) ->
-                result[key].push traverse val[0], $ this
+                result[key].push traverse.call( context, val[0], $(this) )
 
         else if val instanceof Function
-            result[key] = val $el, $
+            result[key] = val.call context, $el, $
 
         else if typeof val == 'object'
-            $.extend result, traverse val, $el.find key
+            $.extend result, traverse.call( context, val, $el.find(key) )
 
     return result
 
@@ -69,7 +70,7 @@ class Template
     scrape: (options) ->
         
         if typeof options == 'string'
-          options = uri: options
+            options = uri: options
 
         deferred = Q.defer()
         options.header ?= 'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like
@@ -80,13 +81,13 @@ Gecko) Chrome/31.0.1650.63 Safari/537.36'
             if error or response.statusCode != 200
                 return deferred.reject {error, response, body}
 
-            deferred.resolve @process body
+            deferred.resolve @process body, response
 
         return deferred.promise
 
-    process: (html) =>
+    process: (html, context) ->
 
-        traverse @template, $ html
+        traverse.call context, @template, $(html)
 
 module.exports.template = (template) ->
     return new Template template

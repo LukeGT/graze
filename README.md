@@ -71,7 +71,15 @@ A template is just a Javascript object, structured hierarchically in a way simil
 
 Scraping a website is as simple as calling the `template.scrape` function above.  It takes the same first argument as the `request` function in the popular library [request](https://www.npmjs.org/package/request).  It returns a [q](https://www.npmjs.org/package/q) promise object, which helps to stop pyramids of death and makes error handling far more sane.  
 
-Below is an example in Javascript, for those of you not coffee-inclined.  
+## Pro tips
+
+Custom functions are called with the request's response object as their context, so you can access things like the URL of the page being scraped as `this.request.href`.  
+
+If you'd rather not have `graze` handle your web-page retrieval, you can manually run a template on an HTML string by calling `template.process(html, context)`, where `context` is the context you wish your custom functions to run within.  
+
+# Javascript example
+
+For those of you who prefer decaf:
 
 ```javascript
 var graze = require('graze');
