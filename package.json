@@ -4,7 +4,7 @@
   "description": "Turn websites into well structured JSON using templates",
   "main": "index.coffee",
   "scripts": {
-    "test": "coffee test.coffee"
+    "test": "vows --spec --no-error"
   },
   "repository": {
     "type": "git",
@@ -28,6 +28,7 @@
     "jsdom": "~0.8.10"
   },
   "devDependencies": {
+    "coffee-script": "^1.8.0",
     "should": "^4.2.1",
     "vows": "^0.8.0"
   }

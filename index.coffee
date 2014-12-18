@@ -86,8 +86,15 @@ Gecko) Chrome/31.0.1650.63 Safari/537.36'
         return deferred.promise
 
     process: (html, context) ->
-
         traverse.call context, @template, $(html)
 
 module.exports.template = (template) ->
     return new Template template
+
+
+# Private methods for testing purposes
+
+module.exports._patch_request = (request_patch, func) ->
+    request = request_patch
+    func()
+    request = require 'request'

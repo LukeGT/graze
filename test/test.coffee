@@ -1,4 +1,4 @@
-graze = require './index'
+graze = require '../index'
 vows = require 'vows'
 should = require 'should'
 
@@ -65,6 +65,13 @@ html = """
 </html>
 """
 
+patched_request = (options, callback) ->
+
+    response =
+        statusCode: 200
+
+    callback undefined, response, html
+
 okay_data = (data) ->
     should(data).be.ok
     data.results.should.be.ok
@@ -84,9 +91,15 @@ vows.describe('Functional Tests').addBatch
         'and scraping a search for something':
 
             topic: (template) ->
-                template.scrape('http://thepiratebay.se/search/something')
-                .then @callback
-                .done()
+
+                callback = @callback
+
+                graze._patch_request patched_request, ->
+
+                    template.scrape('http://thepiratebay.se/search/something')
+                    .then callback
+                    .done()
+
                 return undefined
 
             'we get sensible data': okay_data
@@ -94,9 +107,11 @@ vows.describe('Functional Tests').addBatch
         'and trying to hit a malformed URL':
 
             topic: (template) ->
+
                 template.scrape('bad url')
                 .catch @callback
                 .done()
+
                 return undefined
 
             'it should fail': ({error, response}) ->
@@ -105,9 +120,11 @@ vows.describe('Functional Tests').addBatch
         "and trying to hit a URL that doesn't exist":
 
             topic: (template) ->
+
                 template.scrape('http://www.thisurldoesntexistoritbetterwellnotorelsethistestwillfail.com/')
                 .catch @callback
                 .done()
+
                 return undefined
 
             'it should fail': ({error, response}) ->
@@ -116,9 +133,11 @@ vows.describe('Functional Tests').addBatch
         "and trying to hit a path that doesn't exist":
 
             topic: (template) ->
+
                 template.scrape('https://github.com/this/doesnt-exist')
                 .catch @callback
                 .done()
+
                 return undefined
 
             'it should fail': ({error, response}) ->
@@ -132,5 +151,4 @@ vows.describe('Functional Tests').addBatch
 
             'we get sensible data': okay_data
 
-.run
-    error: false
+.export module
