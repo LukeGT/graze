@@ -88,7 +88,7 @@ You might find yourself in a situation where you'd like to group properties toge
 }
 ```
 
-This can be achieved using the special `graze.nest(template)` function, which returns a special custom function.  This function processes the given template using the current page scope, returning that as its extracted value.  So to achieve the above, you might create a template like:
+This can be achieved using the special `graze.nest(template)` function, which takes in a template and returns a custom function.  This function takes in the current page scope and processes it using the given template, returning that as its extracted value.  So to achieve the above, you might create a template like:
 
 ```coffee
 graze.template {
