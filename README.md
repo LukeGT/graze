@@ -73,7 +73,39 @@ Scraping a website is as simple as calling the `template.scrape` function above.
 
 ## Pro tips
 
-Custom functions are called with the request's response object as their context, so you can access things like the URL of the page being scraped as `this.request.href`.  
+### Nesting templates
+
+You might find yourself in a situation where you'd like to group properties together within a parent object, to give something like:
+
+```javascript
+{
+    ...
+    "properties": {
+        "size": "1.2GB",
+        "upload_date": "11/11/2011"
+    },
+    ...
+}
+```
+
+This can be achieved using the special `graze.nest(template)` function, which returns a special custom function.  This function processes the given template using the current page scope, returning that as its extracted value.  So to achieve the above, you might create a template like:
+
+```coffee
+graze.template {
+    ...
+    'properties': graze.nest
+        '.detDesc':
+            size: ($el) -> $el.text().match(/Size\s*([^,]*),/)?[1]
+            upload_date: ($el) -> $el.text().match(/Uploaded ([^,]*),/)?[1]
+    ...
+}
+```
+
+### Accessing the response object
+
+Custom functions are called with the request's `response` object as their context, so you can access things like the URL of the page being scraped as `this.request.href`.  
+
+### Processing HTML directly
 
 If you'd rather not have `graze` handle your web-page retrieval, you can manually run a template on an HTML string by calling `template.process(html, context)`, where `context` is the context you wish your custom functions to run within.  
 

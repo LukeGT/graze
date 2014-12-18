@@ -61,6 +61,12 @@ traverse = (template, $el) ->
     return result
 
 
+# Allow the user to nest templates within one another
+
+module.exports.nest = (template) ->
+    ($el) -> return traverse template, $el
+
+
 # Stores a template and allows for scraping on a given URL
 
 class Template

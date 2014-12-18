@@ -6,11 +6,13 @@ pirate_bay_template = graze.template
     '#searchResult > tr':
         results: [
             'td:eq(1)':
+                links: graze.nest
+                    '.detName a':
+                        page: graze.attr('href')
+                    '[alt="Magnet link"]':
+                        magnet: graze.parent().attr('href')
                 '.detName a':
                     title: graze.text()
-                    link: graze.attr('href')
-                '[alt="Magnet link"]':
-                    magnet_link: graze.parent().attr('href')
                 '.detDesc':
                     description: graze.text()
                     size: ($el) -> $el.text().match(/Size\s*([^,]*),/)?[1]
@@ -76,8 +78,9 @@ okay_data = (data) ->
     should(data).be.ok
     data.results.should.be.ok
     data.results[0].title.should.be.ok
-    data.results[0].link.should.be.ok
-    data.results[0].magnet_link.should.be.ok
+    data.results[0].links.should.be.ok
+    data.results[0].links.page.should.be.ok
+    data.results[0].links.magnet.should.be.ok
     data.results[0].description.should.be.ok
     data.results[0].size.should.be.ok
     data.results[0].seeders.should.be.ok
