@@ -93,7 +93,7 @@ This can be achieved using the special `graze.nest(template)` function, which ta
 ```coffee
 graze.template {
     ...
-    'properties': graze.nest
+    properties: graze.nest
         '.detDesc':
             size: ($el) -> $el.text().match(/Size\s*([^,]*),/)?[1]
             upload_date: ($el) -> $el.text().match(/Uploaded ([^,]*),/)?[1]
