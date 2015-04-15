@@ -1,6 +1,6 @@
 {
   "name": "graze",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "description": "Turn websites into well structured JSON using templates",
   "main": "index.coffee",
   "scripts": {
@@ -23,10 +23,10 @@
     "url": "https://github.com/LukeGT/graze/issues"
   },
   "dependencies": {
-    "request": "~2.30.0",
-    "q": "~0.9.7",
-    "jquery": "~2.1.0-beta3",
-    "jsdom": "~0.8.10"
+    "jquery": "~2.1.3",
+    "jsdom": "~3.1.2",
+    "q": "~1.2.0",
+    "request": "~2.55.0"
   },
   "devDependencies": {
     "coffee-script": "^1.8.0",

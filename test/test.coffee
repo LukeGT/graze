@@ -3,7 +3,7 @@ vows = require 'vows'
 should = require 'should'
 
 pirate_bay_template = graze.template
-    '#searchResult > tr':
+    '#searchResult tbody tr':
         results: [
             'td:eq(1)':
                 links: graze.nest
@@ -75,6 +75,7 @@ patched_request = (options, callback) ->
     callback undefined, response, html
 
 okay_data = (data) ->
+    console.log(data)
     should(data).be.ok
     data.results.should.be.ok
     data.results[0].title.should.be.ok

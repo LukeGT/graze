@@ -1,8 +1,7 @@
 jsdom =   require('jsdom').jsdom
-$ =       require('jquery')(jsdom().parentWindow)
+jquery =  require('jquery')
 request = require 'request'
 Q =       require 'q'
-
 
 # A builder for a chain of extraction methods
 
@@ -19,7 +18,7 @@ class Graze
 
 # Construct magic methods
 
-for name, func of $.fn
+for name, func of jquery(jsdom().defaultView).fn
 
     do (name, func) ->
 
@@ -37,7 +36,7 @@ for name, func of $.fn
 
 # Navigate a template given a jQuery DOM
 
-traverse = (template, $el) ->
+traverse = (template, $el, $) ->
 
     context = this
     result = {}
@@ -50,13 +49,13 @@ traverse = (template, $el) ->
         else if val instanceof Array
             result[key] = []
             $el.each (index) ->
-                result[key].push traverse.call( context, val[0], $(this) )
+                result[key].push traverse.call( context, val[0], $(this), $ )
 
         else if val instanceof Function
             result[key] = val.call context, $el, $
 
         else if typeof val == 'object'
-            $.extend result, traverse.call( context, val, $el.find(key) )
+            $.extend result, traverse.call( context, val, $el.find(key), $ )
 
     return result
 
@@ -64,7 +63,7 @@ traverse = (template, $el) ->
 # Allow the user to nest templates within one another
 
 module.exports.nest = (template) ->
-    ($el) -> return traverse template, $el
+    ($el, $) -> return traverse template, $el, $
 
 
 # Stores a template and allows for scraping on a given URL
@@ -92,7 +91,9 @@ Gecko) Chrome/31.0.1650.63 Safari/537.36'
         return deferred.promise
 
     process: (html, context) ->
-        traverse.call context, @template, $(html)
+        window = jsdom(html).defaultView
+        $ = jquery(window)
+        traverse.call context, @template, $(window.document.documentElement), $
 
 module.exports.template = (template) ->
     return new Template template
