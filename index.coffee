@@ -61,6 +61,9 @@ traverse = (template, $el, $) ->
         else if typeof val == 'object'
             extend result, traverse.call( context, val, $el.find(key), $ )
 
+        else if typeof val == 'string'
+            result[key] = val
+
     return result
 
 

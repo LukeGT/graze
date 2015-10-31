@@ -5,6 +5,7 @@ should = require 'should'
 pirate_bay_template = graze.template
     '#searchResult > tr':
         results: [
+            label: 'piratebay'
             'td:nth-child(2)':
                 links: graze.nest
                     '.detName a':
@@ -78,6 +79,7 @@ okay_data = (data) ->
     console.log(data)
     should(data).be.ok
     data.results.should.be.ok
+    data.results[0].label.should.be.ok
     data.results[0].title.should.be.ok
     data.results[0].links.should.be.ok
     data.results[0].links.page.should.be.ok

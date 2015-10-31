@@ -1,6 +1,6 @@
 {
   "name": "graze",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Turn websites into well structured JSON using templates",
   "main": "index.coffee",
   "scripts": {
