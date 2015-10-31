@@ -2,6 +2,8 @@ graze = require '../index'
 vows = require 'vows'
 should = require 'should'
 
+graze.debug = true
+
 pirate_bay_template = graze.template
     '#searchResult > tr':
         results: [

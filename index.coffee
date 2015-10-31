@@ -2,6 +2,8 @@ cheerio = require 'cheerio'
 request = require 'request'
 Q =       require 'q'
 
+module.exports.debug = false
+
 # A builder for a chain of extraction methods
 
 class Graze
@@ -59,6 +61,8 @@ traverse = (template, $el, $) ->
             result[key] = val.call context, $el, $
 
         else if typeof val == 'object'
+            if module.exports.debug
+                console.error "Graze debug: #{ $el.find(key).length } elements matched #{key}"
             extend result, traverse.call( context, val, $el.find(key), $ )
 
         else if typeof val == 'string'
