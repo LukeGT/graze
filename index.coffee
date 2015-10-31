@@ -1,5 +1,4 @@
-jsdom =   require('jsdom').jsdom
-jquery =  require('jquery')
+cheerio = require 'cheerio'
 request = require 'request'
 Q =       require 'q'
 
@@ -18,7 +17,7 @@ class Graze
 
 # Construct magic methods
 
-for name, func of jquery(jsdom().defaultView).fn
+for name, func of cheerio.prototype
 
     do (name, func) ->
 
@@ -33,6 +32,11 @@ for name, func of jquery(jsdom().defaultView).fn
             graze[name](arguments...)
             return graze
 
+# A small utility method to extend one object into another
+
+extend = (a, b) ->
+    for key, value of b
+        a[key] = value
 
 # Navigate a template given a jQuery DOM
 
@@ -55,7 +59,7 @@ traverse = (template, $el, $) ->
             result[key] = val.call context, $el, $
 
         else if typeof val == 'object'
-            $.extend result, traverse.call( context, val, $el.find(key), $ )
+            extend result, traverse.call( context, val, $el.find(key), $ )
 
     return result
 
@@ -91,9 +95,8 @@ Gecko) Chrome/31.0.1650.63 Safari/537.36'
         return deferred.promise
 
     process: (html, context) ->
-        window = jsdom(html).defaultView
-        $ = jquery(window)
-        traverse.call context, @template, $(window.document.documentElement), $
+        $ = cheerio.load html
+        traverse.call context, @template, $.root(), $
 
 module.exports.template = (template) ->
     return new Template template

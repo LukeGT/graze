@@ -14,7 +14,7 @@ graze = require 'graze'
 template = graze.template {
     '#searchResult tr': 
         results: [
-            'td:eq(1)':
+            'td:nth-child(2)':
                 '.detName a':
                     title: graze.text()
                     link: graze.attr('href')
@@ -23,7 +23,7 @@ template = graze.template {
                 '.detDesc':
                     description: graze.text()
                     size: ($el) -> $el.text().match(/Size\s*([^,]*),/)?[1]
-            'td:eq(2)':
+            'td:nth-child(3)':
                 seeders: graze.text()
         ]
 }
@@ -119,7 +119,7 @@ var graze = require('graze');
 var template = graze.template({
     '#searchResult tr': {
         results: [{
-            'td:eq(1)': {
+            'td:nth-child(2)': {
                 '.detName a': {
                     title: graze.text(),
                     link: graze.attr('href'),
@@ -132,7 +132,7 @@ var template = graze.template({
                     size: function($el) { match = $el.text().match(/Size\s*([^,]*),/); return match && match[1] }
                 },
             },
-            'td:eq(2)': {
+            'td:nth-child(3)': {
                 seeders: graze.text(),
             },
         }],

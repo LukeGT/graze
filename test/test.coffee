@@ -3,9 +3,9 @@ vows = require 'vows'
 should = require 'should'
 
 pirate_bay_template = graze.template
-    '#searchResult tbody tr':
+    '#searchResult > tr':
         results: [
-            'td:eq(1)':
+            'td:nth-child(2)':
                 links: graze.nest
                     '.detName a':
                         page: graze.attr('href')
@@ -16,7 +16,7 @@ pirate_bay_template = graze.template
                 '.detDesc':
                     description: graze.text()
                     size: ($el) -> $el.text().match(/Size\s*([^,]*),/)?[1]
-            'td:eq(2)':
+            'td:nth-child(3)':
                 seeders: graze.text()
         ]
 
