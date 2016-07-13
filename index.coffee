@@ -42,34 +42,34 @@ extend = (a, b) ->
 
 # Navigate a template given a jQuery DOM
 
-traverse = (template, $el, $) ->
+traverse = (value, $el, $) ->
 
     context = this
-    result = {}
 
-    for key, val of template
+    if value instanceof Graze
+        return value.execute $el
 
-        if val instanceof Graze
-            result[key] = val.execute $el
+    else if value instanceof Array
+        return (for el in $el
+            traverse.call context, value[0], $(el), $
+        )
 
-        else if val instanceof Array
-            result[key] = []
-            $el.each (index) ->
-                result[key].push traverse.call( context, val[0], $(this), $ )
+    else if value instanceof Function
+        return value.call context, $el, $
 
-        else if val instanceof Function
-            result[key] = val.call context, $el, $
+    else if typeof value == 'object'
+        result = {}
+        for key, val of value
+            if Object.getPrototypeOf(val) == Object.prototype
+                if module.exports.debug
+                    console.error "Graze debug: #{ $el.find(key).length } elements matched #{key}"
+                extend result, traverse.call( context, val, $el.find(key), $ )
+            else
+                result[key] = traverse.call( context, val, $el, $ )
+        return result
 
-        else if typeof val == 'object'
-            if module.exports.debug
-                console.error "Graze debug: #{ $el.find(key).length } elements matched #{key}"
-            extend result, traverse.call( context, val, $el.find(key), $ )
-
-        else if typeof val == 'string'
-            result[key] = val
-
-    return result
-
+    else
+        return value
 
 # Allow the user to nest templates within one another
 

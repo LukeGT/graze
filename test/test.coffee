@@ -5,6 +5,10 @@ should = require 'should'
 graze.debug = true
 
 pirate_bay_template = graze.template
+    '.categories li':
+        categories: [
+            graze.text()
+        ]
     '#searchResult > tr':
         results: [
             label: 'piratebay'
@@ -25,6 +29,11 @@ pirate_bay_template = graze.template
 
 html = """
 <html>
+<ul class="categories">
+    <li>Movies</li>
+    <li>Games</li>
+    <li>Music</li>
+</ul>
 <table id="searchResult">
     <thead id="tableHead">
         <tr class="header">
@@ -80,6 +89,8 @@ patched_request = (options, callback) ->
 okay_data = (data) ->
     console.log(data)
     should(data).be.ok
+    data.categories.should.be.ok
+    data.categories[0].should.be.ok
     data.results.should.be.ok
     data.results[0].label.should.be.ok
     data.results[0].title.should.be.ok
