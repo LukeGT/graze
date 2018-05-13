@@ -60,7 +60,7 @@ traverse = (value, $el, $) ->
     else if typeof value == 'object'
         result = {}
         for key, val of value
-            if Object.getPrototypeOf(val) == Object.prototype
+            if val? and Object.getPrototypeOf(val) == Object.prototype
                 if module.exports.debug
                     console.error "Graze debug: #{ $el.find(key).length } elements matched #{key}"
                 extend result, traverse.call( context, val, $el.find(key), $ )
