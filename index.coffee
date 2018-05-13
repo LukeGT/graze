@@ -57,7 +57,7 @@ traverse = (value, $el, $) ->
     else if value instanceof Function
         return value.call context, $el, $
 
-    else if typeof value == 'object'
+    else if value? and typeof value == 'object'
         result = {}
         for key, val of value
             if val? and Object.getPrototypeOf(val) == Object.prototype

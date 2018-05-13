@@ -5,6 +5,8 @@ should = require 'should'
 graze.debug = true
 
 pirate_bay_template = graze.template
+    null: null
+    undefined: undefined
     '.categories li':
         categories: [
             graze.text()
@@ -89,10 +91,12 @@ patched_request = (options, callback) ->
 okay_data = (data) ->
     console.log(data)
     should(data).be.ok
+    should(data.null).be.exactly(null)
+    should(data.undefined).be.exactly(undefined)
     data.categories.should.be.ok
     data.categories[0].should.be.ok
     data.results.should.be.ok
-    data.results[0].label.should.be.ok
+    data.results[0].label.should.be.exactly('piratebay')
     data.results[0].title.should.be.ok
     data.results[0].links.should.be.ok
     data.results[0].links.page.should.be.ok
